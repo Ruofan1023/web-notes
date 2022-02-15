@@ -1,0 +1,13 @@
+{% if user.is_authenticated %}
+<div id="note-form" class="border border-3 px-3 py-3">
+        <form action="{% url 'create' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="content" class="h4">New Note</label>
+                {{ form.title }}
+                {{ form.content }}
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+</div>
+{%endif%}

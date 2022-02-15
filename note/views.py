@@ -1,13 +1,17 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from .models import User
+from .models import User, Note
+from django import forms
+import datetime
 
 # Create your views here.
 def index(request):
-    return render(request, "note/index.html")
+    return render(request, "note/index.html", {
+        'form': NoteForm()
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -59,3 +63,18 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "note/register.html")
+
+class NoteForm(forms.Form):
+    title = forms.CharField(max_length=160)
+    content = forms.CharField(widget=forms.Textarea)
+
+def create(request):
+    if request.method == 'POST':
+        form = NoteForm(request.POST);
+        if form.is_valid():
+            data = form.cleaned_data
+            title = data['title']
+            content = data['content']
+            note = Note(user=request.user, title=title, content=content)
+            note.save()
+    return redirect('index')
