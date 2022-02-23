@@ -1,14 +1,11 @@
 from xml.etree.ElementTree import PI
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from .models import User, Note, PinQueue
 from django import forms
-import datetime
-import json
-from json import JSONEncoder
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
