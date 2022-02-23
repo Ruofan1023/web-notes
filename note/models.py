@@ -15,6 +15,7 @@ class Note(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(default=datetime.datetime.now)
     isarchive = models.BooleanField(default=False)
+    islocked = models.BooleanField(default=False)
 
 
 class PinQueue(models.Model):

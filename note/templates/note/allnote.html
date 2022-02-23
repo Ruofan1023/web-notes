@@ -7,6 +7,7 @@
         <h4>Pinned</h4>
 
         {% for note in pinned_notes %}
+        {% if not note.islocked %}
             <div class='card'>
                 <div class='card-body'>
                     <h5 class='card-title'>{{ note.title }}</h5>
@@ -31,39 +32,62 @@
                         <input type='hidden' name='noteid' value={{ note.id }}>
                         <button type='submit' name='delete'>Delete</button>
                     </form>
+                    <button class='lock-btn' id='lock-btn-{{ note.id }}' type='submit' name='delete'>Lock</button>
                 </div>
             </div>
+        {% else %}
+            <div class='card'>
+                <div class='card-body'>
+                    <p>This note is locked</p>
+                    <input type="password" id='password-unlock-{{ note.id }}' placeholder="Enter Your Password">
+                    <button class='unlock-btn' id='unlock-btn-{{ note.id }}' type='submit' name='delete'>Unlock</button>
+                </div>
+            </div>
+
+        {% endif %}
+            
         
         {% endfor %}
     </div>
     {% for note in notes %}
-        <div class='card'>
-            <div class='card-body'>
-                <h5 class='card-title'>{{ note.title }}</h5>
-                <p class='card-text'> {{ note.timestamp }} </p>
-                <p class='card-text'> {{ note.content }} </p>
+        {% if not note.islocked %}
+            <div class='card'>
+                <div class='card-body'>
+                    <h5 class='card-title'>{{ note.title }}</h5>
+                    <p class='card-text'> {{ note.timestamp }} </p>
+                    <p class='card-text'> {{ note.content }} </p>
 
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type='hidden' name='type' value='archive'>
-                    <input type='hidden' name='noteid' value={{ note.id }}>
-                    <button type='submit' name='archive' value=True>Archive</button>
-                </form>
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type='hidden' name='type' value='pin'>
-                    <input type='hidden' name='noteid' value={{ note.id }}>
-                    <button type='submit' name='pin'>Pin</button>
-                </form>
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type='hidden' name='type' value='delete'>
-                    <input type='hidden' name='noteid' value={{ note.id }}>
-                    <button type='submit' name='delete'>Delete</button>
-                </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='archive'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button type='submit' name='archive' value=True>Archive</button>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='pin'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button type='submit' name='pin'>Pin</button>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='delete'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button type='submit' name='delete'>Delete</button>
+                    </form>
+                    <button class='lock-btn' id='lock-btn-{{ note.id }}' type='submit' name='delete'>Lock</button>
+                </div>
+
             </div>
-
-        </div>
+        {% else %}
+            <div class='card'>
+                <div class='card-body'>
+                    <p>This note is locked</p>
+                    <input type="password" id='password-unlock-{{ note.id }}' placeholder="Enter Your Password">
+                    <button class='unlock-btn' id='unlock-btn-{{ note.id }}' type='submit' name='delete'>Unlock</button>
+                </div>
+            </div>
+        {% endif %}
     {% endfor %}
 {% endblock body %}
 

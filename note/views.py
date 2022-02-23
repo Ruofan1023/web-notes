@@ -1,5 +1,5 @@
 from xml.etree.ElementTree import PI
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
@@ -7,7 +7,9 @@ from django.urls import reverse
 from .models import User, Note, PinQueue
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+import json
 # Create your views here.
 def index(request):
     return render(request, "note/index.html", {"form": NoteForm()})
@@ -168,3 +170,35 @@ def archive(request):
     notes = Note.objects.filter(isarchive=True).all()
     notes = notes.order_by("-timestamp").all()
     return render(request, "note/archive.html", {"notes": notes})
+
+@login_required
+@csrf_exempt
+def lock(request, noteid):
+    note = Note.objects.get(pk=noteid)
+    if note.user == request.user:
+        note.islocked = True
+        note.save()
+        return JsonResponse({
+            'islocked':  note.islocked
+        }, safe=False)
+    return JsonResponse({}, status=400)
+    
+
+@login_required
+@csrf_exempt
+def unlock(request, noteid):
+    if request.method == "POST":
+        username = request.user.username
+        data = json.loads(request.body)
+        print(data)
+        password = data['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            note = Note.objects.get(pk=noteid)
+            note.islocked = False;
+            note.save()
+            return JsonResponse({
+            'islocked':  note.islocked
+        }, safe=False)
+    return JsonResponse({}, status=400)
+
