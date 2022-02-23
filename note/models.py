@@ -11,3 +11,6 @@ class Note(models.Model):
     title = models.CharField(max_length=160, default=None)
     content = models.TextField()
     timestamp = models.DateTimeField(default=datetime.datetime.now)
+    isarchive = models.BooleanField(default=False)
+
+    

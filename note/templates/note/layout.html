@@ -19,8 +19,11 @@
                         <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
-                <li class="nav-item" id="all-post">
-                    <a class="nav-link" href="">All Notes</a>
+                <li class="nav-item" id="all-note">
+                    <a class="nav-link" href="{% url 'allnote' %}">All Notes</a>
+                </li>
+                <li class="nav-item" id="archive-note">
+                    <a class="nav-link" href="{% url 'archive' %}">Archived Notes</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">

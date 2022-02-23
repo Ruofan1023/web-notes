@@ -4,8 +4,12 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="content" class="h4">New Note</label>
-                {{ form.title }}
-                {{ form.content }}
+                <div>
+                    {{ form.title }}
+                </div>
+                <div>
+                    {{ form.content }}
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </form>

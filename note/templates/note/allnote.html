@@ -1,0 +1,21 @@
+{% extends "note/layout.html" %}
+
+{% block body %}
+<h2>All Notes</h>
+    {% for note in notes %}
+        <div class='card'>
+            <div class='card-body'>
+                <h5 class='card-title'>{{ note.title }}</h5>
+                <p class='card-text'> {{ note.timestamp }} </p>
+                <p class='card-text'> {{ note.content }} </p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type='hidden' name='noteid' value={{ note.id }}>
+                    <button type='submit' name='archive' value=True>Archive</button>
+                </form>
+            </div>
+
+        </div>
+    {% endfor %}
+{% endblock body %}

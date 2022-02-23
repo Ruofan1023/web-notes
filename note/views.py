@@ -75,6 +75,39 @@ def create(request):
             data = form.cleaned_data
             title = data['title']
             content = data['content']
+            print(f'title: {title}')
+            print(f'content: {content}')
             note = Note(user=request.user, title=title, content=content)
             note.save()
     return redirect('index')
+
+def allnote(request):
+    
+    if request.method == "POST":
+        print(request.POST)
+        isarchive = request.POST['archive'] == 'True'
+        noteid = int(request.POST['noteid'])
+        note = Note.objects.get(pk=noteid)
+        note.isarchive = isarchive
+        note.save()
+        print(note.isarchive)
+    notes = Note.objects.filter(isarchive=False).all()
+    notes = notes.order_by("-timestamp").all()
+    return render(request, 'note/allnote.html', {
+        "notes": notes
+    })
+
+def archive(request):
+    if request.method == "POST":
+        print(request.POST)
+        isarchive = request.POST['archive'] == 'True'
+        noteid = int(request.POST['noteid'])
+        note = Note.objects.get(pk=noteid)
+        note.isarchive = isarchive
+        note.save()
+        print(note.isarchive)
+    notes = Note.objects.filter(isarchive=True).all()
+    notes = notes.order_by("-timestamp").all()
+    return render(request, 'note/archive.html', {
+        'notes': notes
+    })
