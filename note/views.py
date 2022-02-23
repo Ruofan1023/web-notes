@@ -9,6 +9,7 @@ from django import forms
 import datetime
 import json
 from json import JSONEncoder
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 def index(request):
@@ -113,13 +114,30 @@ def allnote(request):
             queue.remove(noteid)
             print(queue)
             pin_queue.save()
+        if (request.POST['type'] == 'delete'):
+            noteid = int(request.POST['noteid'])
+            toDelete = Note.objects.get(pk=noteid)
+            try:   
+                PinQueue.objects.first().queue.remove(toDelete.id)
+            except ValueError:
+                pass
+            toDelete.delete()
 
     notes = Note.objects.filter(isarchive=False).all()
     ordered_notes = notes.order_by("-timestamp").all()
     unpinned_notes = filter(lambda note: note.id not in PinQueue.objects.first().queue, ordered_notes)
-    pinned_notes = filter(lambda note: note.id in PinQueue.objects.first().queue, notes)
-    pinned_notes = map(lambda noteid: Note.objects.get(pk=int(noteid)), PinQueue.objects.first().queue)
+    # pinned_notes = filter(lambda note: note.id in PinQueue.objects.first().queue, notes)
 
+    def getPinned(noteid):
+        try:
+            note = Note.objects.get(pk=int(noteid))
+        except ObjectDoesNotExist:
+            return None
+        if (not note.isarchive):
+            return note
+        return None
+    pinned_notes = map(getPinned, PinQueue.objects.first().queue)
+    pinned_notes = list(filter(lambda note: note != None, pinned_notes))
     return render(request, 'note/allnote.html', {
         "notes": unpinned_notes,
         "pinned_notes": pinned_notes
@@ -128,12 +146,20 @@ def allnote(request):
 def archive(request):
     if request.method == "POST":
         print(request.POST)
-        isarchive = request.POST['archive'] == 'True'
-        noteid = int(request.POST['noteid'])
-        note = Note.objects.get(pk=noteid)
-        note.isarchive = isarchive
-        note.save()
-        print(note.isarchive)
+        if (request.POST['type'] == 'archive'):
+            isarchive = request.POST['archive'] == 'True'
+            noteid = int(request.POST['noteid'])
+            note = Note.objects.get(pk=noteid)
+            note.isarchive = isarchive
+            note.save()
+        if (request.POST['type'] == 'delete'):
+            noteid = int(request.POST['noteid'])
+            toDelete = Note.objects.get(pk=noteid)
+            try:
+                PinQueue.objects.first().queue.remove(toDelete.id)
+            except ValueError:
+                pass
+            toDelete.delete()
     notes = Note.objects.filter(isarchive=True).all()
     notes = notes.order_by("-timestamp").all()
     return render(request, 'note/archive.html', {

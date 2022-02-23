@@ -5,7 +5,7 @@
 <h2>All Notes</h>
     <div>
         <h4>Pinned</h4>
-        
+
         {% for note in pinned_notes %}
             <div class='card'>
                 <div class='card-body'>
@@ -24,6 +24,12 @@
                         <input type='hidden' name='type' value='unpin'>
                         <input type='hidden' name='noteid' value={{ note.id }}>
                         <button type='submit' name='unpin'>Unpin</button>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='delete'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button type='submit' name='delete'>Delete</button>
                     </form>
                 </div>
             </div>
@@ -48,6 +54,12 @@
                     <input type='hidden' name='type' value='pin'>
                     <input type='hidden' name='noteid' value={{ note.id }}>
                     <button type='submit' name='pin'>Pin</button>
+                </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type='hidden' name='type' value='delete'>
+                    <input type='hidden' name='noteid' value={{ note.id }}>
+                    <button type='submit' name='delete'>Delete</button>
                 </form>
             </div>
 

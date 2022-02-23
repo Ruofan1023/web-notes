@@ -10,8 +10,15 @@
                 <p class='card-text'> {{ note.content }} </p>
                 <form method="POST">
                     {% csrf_token %}
+                    <input type='hidden' name='type' value='archive'>
                     <input type='hidden' name='noteid' value={{ note.id }}>
                     <button type='submit' name='archive' value=False>Unarchive</button>
+                </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type='hidden' name='type' value='delete'>
+                    <input type='hidden' name='noteid' value={{ note.id }}>
+                    <button type='submit' name='delete'>Delete</button>
                 </form>
             </div>
 
