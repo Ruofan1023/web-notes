@@ -1,7 +1,35 @@
 {% extends "note/layout.html" %}
+{% load static %}
 
 {% block body %}
 <h2>All Notes</h>
+    <div>
+        <h4>Pinned</h4>
+        
+        {% for note in pinned_notes %}
+            <div class='card'>
+                <div class='card-body'>
+                    <h5 class='card-title'>{{ note.title }}</h5>
+                    <p class='card-text'> {{ note.timestamp }} </p>
+                    <p class='card-text'> {{ note.content }} </p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='archive'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button type='submit' name='archive' value=True>Archive</button>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='unpin'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button type='submit' name='unpin'>Unpin</button>
+                    </form>
+                </div>
+            </div>
+        
+        {% endfor %}
+    </div>
     {% for note in notes %}
         <div class='card'>
             <div class='card-body'>
@@ -11,11 +39,22 @@
 
                 <form method="POST">
                     {% csrf_token %}
+                    <input type='hidden' name='type' value='archive'>
                     <input type='hidden' name='noteid' value={{ note.id }}>
                     <button type='submit' name='archive' value=True>Archive</button>
+                </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type='hidden' name='type' value='pin'>
+                    <input type='hidden' name='noteid' value={{ note.id }}>
+                    <button type='submit' name='pin'>Pin</button>
                 </form>
             </div>
 
         </div>
     {% endfor %}
 {% endblock body %}
+
+{% block script %}
+    <script src="{% static 'note/note.js' %}"></script>
+{% endblock %}

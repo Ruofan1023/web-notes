@@ -1,11 +1,14 @@
+from xml.etree.ElementTree import PI
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from .models import User, Note
+from .models import User, Note, PinQueue
 from django import forms
 import datetime
+import json
+from json import JSONEncoder
 
 # Create your views here.
 def index(request):
@@ -84,17 +87,42 @@ def create(request):
 def allnote(request):
     
     if request.method == "POST":
-        print(request.POST)
-        isarchive = request.POST['archive'] == 'True'
-        noteid = int(request.POST['noteid'])
-        note = Note.objects.get(pk=noteid)
-        note.isarchive = isarchive
-        note.save()
-        print(note.isarchive)
+        print(request)
+        if (request.POST['type'] == 'archive'):
+            isarchive = request.POST['archive'] == 'True'
+            noteid = int(request.POST['noteid'])
+            note = Note.objects.get(pk=noteid)
+            note.isarchive = isarchive
+            note.save()
+        if (request.POST['type'] == 'pin'):
+            noteid = int(request.POST['noteid'])
+            print(f'pin {noteid}')
+            pin_queue = None
+            if (not PinQueue.objects.exists()):
+                pin_queue = PinQueue.objects.create()
+            else:
+                pin_queue = PinQueue.objects.first()
+            queue = pin_queue.queue
+            queue.insert(0, noteid)
+            print(queue)
+            pin_queue.save()
+        if (request.POST['type'] == 'unpin'):
+            noteid = int(request.POST['noteid'])
+            pin_queue = PinQueue.objects.first()
+            queue = pin_queue.queue
+            queue.remove(noteid)
+            print(queue)
+            pin_queue.save()
+
     notes = Note.objects.filter(isarchive=False).all()
-    notes = notes.order_by("-timestamp").all()
+    ordered_notes = notes.order_by("-timestamp").all()
+    unpinned_notes = filter(lambda note: note.id not in PinQueue.objects.first().queue, ordered_notes)
+    pinned_notes = filter(lambda note: note.id in PinQueue.objects.first().queue, notes)
+    pinned_notes = map(lambda noteid: Note.objects.get(pk=int(noteid)), PinQueue.objects.first().queue)
+
     return render(request, 'note/allnote.html', {
-        "notes": notes
+        "notes": unpinned_notes,
+        "pinned_notes": pinned_notes
     })
 
 def archive(request):
