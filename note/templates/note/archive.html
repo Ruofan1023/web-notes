@@ -1,25 +1,27 @@
 {% extends "note/layout.html" %}
 
 {% block body %}
-<h2>Archived Notes</h>
+<h2 class='mx-2 my-2'>Archived Notes</h>
     {% for note in notes %}
-        <div class='card'>
+        <div class='card mx-3 mb-2'>
             <div class='card-body'>
                 <h5 class='card-title'>{{ note.title }}</h5>
-                <p class='card-text'> {{ note.timestamp }} </p>
-                <p class='card-text'> {{ note.content }} </p>
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type='hidden' name='type' value='archive'>
-                    <input type='hidden' name='noteid' value={{ note.id }}>
-                    <button type='submit' name='archive' value=False>Unarchive</button>
-                </form>
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type='hidden' name='type' value='delete'>
-                    <input type='hidden' name='noteid' value={{ note.id }}>
-                    <button type='submit' name='delete'>Delete</button>
-                </form>
+                <h6 class='card-text'> {{ note.timestamp }} </h6>
+                <h6 class='card-text'> {{ note.content }} </h6>
+                <div class='row mx-2'>
+                    <form class='mx-1' method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='archive'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button class='btn btn-info' type='submit' name='archive' value=False>Unarchive</button>
+                    </form>
+                    <form class='mx-1' method="POST">
+                        {% csrf_token %}
+                        <input type='hidden' name='type' value='delete'>
+                        <input type='hidden' name='noteid' value={{ note.id }}>
+                        <button class='btn btn-info' type='submit' name='delete'>Delete</button>
+                    </form>
+                </div>
             </div>
 
         </div>

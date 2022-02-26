@@ -1,11 +1,11 @@
 {% extends "note/layout.html" %}
 {% load static %}
 {% block body %}
-<h1>Search</h1>
-<form method="post">
+<h2 class='mx-2 my-2'>Search</h2>
+<form class='mx-2 my-2' method="post">
     {% csrf_token %}
     <input name='keyword'>
-    <input type='submit' value='search'>
+    <input class='btn btn-info' type='submit' value='search'>
 </form>
 {% endblock body %}
 {% block script %}

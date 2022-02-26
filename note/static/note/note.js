@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(res => res.json())
                 .then(resjson => {
                     console.log(resjson);
-                    window.location = 'http://127.0.0.1:8000/allnote'
+                    location.reload()
+                        //window.location = 'http://127.0.0.1:8000/allnote'
                 })
         })
     });

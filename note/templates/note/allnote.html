@@ -2,45 +2,47 @@
 {% load static %}
 
 {% block body %}
-<h2>All Notes</h>
+<h2  class='mx-2 my-2'>All Notes</h>
     <div>
-        <h4>Pinned</h4>
-
+        <h4 class='mx-2 my-2'>Pinned</h4>
         {% for note in pinned_notes %}
         {% if not note.islocked %}
-            <div class='card'>
+            <div class='card mx-3 mb-2'>
                 <div class='card-body'>
                     <h5 class='card-title'>{{ note.title }}</h5>
-                    <p class='card-text'> {{ note.timestamp }} </p>
-                    <p class='card-text'> {{ note.content }} </p>
-
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type='hidden' name='type' value='archive'>
-                        <input type='hidden' name='noteid' value={{ note.id }}>
-                        <button type='submit' name='archive' value=True>Archive</button>
-                    </form>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type='hidden' name='type' value='unpin'>
-                        <input type='hidden' name='noteid' value={{ note.id }}>
-                        <button type='submit' name='unpin'>Unpin</button>
-                    </form>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type='hidden' name='type' value='delete'>
-                        <input type='hidden' name='noteid' value={{ note.id }}>
-                        <button type='submit' name='delete'>Delete</button>
-                    </form>
-                    <button class='lock-btn' id='lock-btn-{{ note.id }}' type='submit' name='delete'>Lock</button>
+                    <h6 > {{ note.timestamp }} </h6>
+                    <h6 class='card-text'> {{ note.content }} </h6>
+                        <div class='row mx-2'>
+                            <form  class='mx-1' method="POST">
+                                {% csrf_token %}
+                                <input type='hidden' name='type' value='archive'>
+                                <input type='hidden' name='noteid' value={{ note.id }}>
+                                <button class='btn btn-info' type='submit' name='archive' value=True>Archive</button>
+                            </form>
+                            <form  class='mx-1' method="POST">
+                                {% csrf_token %}
+                                <input type='hidden' name='type' value='unpin'>
+                                <input type='hidden' name='noteid' value={{ note.id }}>
+                                <button class='btn btn-info' type='submit' name='unpin'>Unpin</button>
+                            </form>
+                            <form  class='mx-1' method="POST">
+                                {% csrf_token %}
+                                <input type='hidden' name='type' value='delete'>
+                                <input type='hidden' name='noteid' value={{ note.id }}>
+                                <button class='btn btn-info' type='submit' name='delete'>Delete</button>
+                            </form>
+                            <form class='mx-1' >
+                                <button class='lock-btn btn btn-info' id='lock-btn-{{ note.id }}' type='submit' name='lock'>Lock</button>
+                            </form>
+                        </div>
                 </div>
             </div>
         {% else %}
-            <div class='card'>
+            <div class='card mx-3'>
                 <div class='card-body'>
                     <p>This note is locked</p>
                     <input type="password" id='password-unlock-{{ note.id }}' placeholder="Enter Your Password">
-                    <button class='unlock-btn' id='unlock-btn-{{ note.id }}' type='submit' name='delete'>Unlock</button>
+                    <button class='unlock-btn btn btn-info' id='unlock-btn-{{ note.id }}' type='submit' name='unlock'>Unlock</button>
                 </div>
             </div>
 
@@ -49,42 +51,46 @@
         
         {% endfor %}
     </div>
+    <h2  class='mx-2 my-2'>Notes</h>
     {% for note in notes %}
         {% if not note.islocked %}
-            <div class='card'>
+            <div class='card mx-3 mb-2'>
                 <div class='card-body'>
                     <h5 class='card-title'>{{ note.title }}</h5>
-                    <p class='card-text'> {{ note.timestamp }} </p>
-                    <p class='card-text'> {{ note.content }} </p>
-
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type='hidden' name='type' value='archive'>
-                        <input type='hidden' name='noteid' value={{ note.id }}>
-                        <button type='submit' name='archive' value=True>Archive</button>
-                    </form>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type='hidden' name='type' value='pin'>
-                        <input type='hidden' name='noteid' value={{ note.id }}>
-                        <button type='submit' name='pin'>Pin</button>
-                    </form>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type='hidden' name='type' value='delete'>
-                        <input type='hidden' name='noteid' value={{ note.id }}>
-                        <button type='submit' name='delete'>Delete</button>
-                    </form>
-                    <button class='lock-btn' id='lock-btn-{{ note.id }}' type='submit' name='delete'>Lock</button>
+                    <h6 class='card-text'> {{ note.timestamp }} </h6>
+                    <h6 class='card-text'> {{ note.content }} </h6>
+                    <div class='row mx-2'>
+                        <form  class='mx-1' method="POST">
+                            {% csrf_token %}
+                            <input type='hidden' name='type' value='archive'>
+                            <input type='hidden' name='noteid' value={{ note.id }}>
+                            <button class='btn btn-info' type='submit' name='archive' value=True>Archive</button>
+                        </form>
+                        <form  class='mx-1' method="POST">
+                            {% csrf_token %}
+                            <input type='hidden' name='type' value='pin'>
+                            <input type='hidden' name='noteid' value={{ note.id }}>
+                            <button class='btn btn-info' type='submit' name='pin'>Pin</button>
+                        </form>
+                        <form  class='mx-1' method="POST">
+                            {% csrf_token %}
+                            <input type='hidden' name='type' value='delete'>
+                            <input type='hidden' name='noteid' value={{ note.id }}>
+                            <button class='btn btn-info' type='submit' name='delete'>Delete</button>
+                        </form>
+                        <form class='mx-1' >
+                            <button class='lock-btn btn btn-info' id='lock-btn-{{ note.id }}' type='submit' name='lock'>Lock</button>
+                        </form>
+                    </div>
                 </div>
 
             </div>
         {% else %}
-            <div class='card'>
+            <div class='card mx-3'>
                 <div class='card-body'>
                     <p>This note is locked</p>
                     <input type="password" id='password-unlock-{{ note.id }}' placeholder="Enter Your Password">
-                    <button class='unlock-btn' id='unlock-btn-{{ note.id }}' type='submit' name='delete'>Unlock</button>
+                    <button class='unlock-btn btn btn-info' id='unlock-btn-{{ note.id }}' type='submit' name='unlock'>Unlock</button>
                 </div>
             </div>
         {% endif %}
