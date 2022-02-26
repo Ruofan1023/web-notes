@@ -202,3 +202,30 @@ def unlock(request, noteid):
         }, safe=False)
     return JsonResponse({}, status=400)
 
+def search(request):
+    if (request.method == "POST"):
+        keyword = request.POST['keyword']
+        print(keyword)
+        Note.objects.all()
+        notes = Note.objects.filter(isarchive=False).all()
+        filteredByContent = notes.filter(content__icontains=keyword)
+        filteredByTitle = notes.filter(title__icontains=keyword)
+        notes = filteredByTitle.union(filteredByContent)
+        ordered_notes = notes.order_by("-timestamp").all()
+        unpinned_notes = filter(
+            lambda note: note.id not in PinQueue.objects.first().queue, ordered_notes
+        )
+        def getPinned(noteid):
+            try:
+                note = Note.objects.get(pk=int(noteid))
+            except ObjectDoesNotExist:
+                return None
+            if not note.isarchive:
+                return note
+            return None
+
+        pinned_notes = map(getPinned, PinQueue.objects.first().queue)
+        pinned_notes = list(filter(lambda note: note != None, pinned_notes))
+
+        return render(request,"note/allnote.html",{"notes": unpinned_notes, "pinned_notes": pinned_notes},)
+    return render(request, 'note/search.html')

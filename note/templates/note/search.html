@@ -1,0 +1,13 @@
+{% extends "note/layout.html" %}
+{% load static %}
+{% block body %}
+<h1>Search</h1>
+<form method="post">
+    {% csrf_token %}
+    <input name='keyword'>
+    <input type='submit' value='search'>
+</form>
+{% endblock body %}
+{% block script %}
+    <script src="{% static 'note/note.js' %}"></script>
+{% endblock %}

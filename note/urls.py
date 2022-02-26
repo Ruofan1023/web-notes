@@ -9,6 +9,7 @@ urlpatterns = [
     path("create", views.create, name="create"),
     path("allnote", views.allnote, name="allnote"),
     path("archive", views.archive, name="archive"),
+    path("search", views.search, name="search"),
     path("lock/<noteid>", views.lock, name="lock"),
     path("unlock/<noteid>", views.unlock, name="unlock"),
 ]
